@@ -1,5 +1,6 @@
 {
-    "d1": {
+    "NASPA Word List": {
+        "description": "The official word reference for SCRABBLE played in the United States and Canada.",
         "words": [
             "a",
             "b",
@@ -7,17 +8,19 @@
         ]
     },
 
-    "d2": {
+    "House rules": {
+        "description": "NASPA + some fun extras",
         "words": [
             "ka",
             "za"
         ]
     },
-    "d3": {
+
+    "Really really long dictionary name": {
+        "description": "A dictionary with a long name",
         "words": [
-            "aa",
-            "mm"
+            "ka",
+            "za"
         ]
     }
-    
 }
