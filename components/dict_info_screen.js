@@ -1,29 +1,30 @@
 import { View, StyleSheet } from 'react-native';
 import { Text, Card, Switch } from 'react-native-elements';
 
-
-export default function DictInfoScreen({ route, switchDict, selectedDicts }) {
-  const { dictName, description } = route.params;
+export default function DictInfoScreen({ route, dicts, switchDict, forceUpdateId }) {
+  const { id } = route.params;
+  const { name, selected, description } = dicts[id]
   return (
-    <Card 
-      containerStyle={styles.cardContainer}
-      inputContainerStyle={styles.cardInputContainer}  
-    >
-      <View style={styles.row}>
-        <View style={styles.column}>
-          <Card.Title h3 style={styles.cardTitle}>{ dictName }</Card.Title>
-          <Text style={styles.cardDescription}>{ description }</Text>  
+    <View>
+      <Card 
+        containerStyle={styles.cardContainer}
+        inputContainerStyle={styles.cardInputContainer} 
+      >
+        <View style={styles.row}>
+          <View style={styles.column}>
+            <Card.Title h3 style={styles.cardTitle}>{ name }</Card.Title>
+            <Text style={styles.cardDescription}>{ description }</Text>  
+          </View>
+          <View style={styles.switchColumn}>
+            <Switch
+              style={styles.switch}
+              value={ selected == 1 }
+              onChange={() => switchDict(id)}
+            />
+          </View>
         </View>
-        <View style={styles.switchColumn}>
-          <Switch
-            style={styles.switch}
-            value={selectedDicts[dictName]}
-            onChange={() => switchDict(dictName)}
-          />
-        </View>
-      </View>
-      
-    </Card>
+      </Card>
+    </View>
   );
 }
 

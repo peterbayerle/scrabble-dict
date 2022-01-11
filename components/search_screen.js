@@ -4,48 +4,38 @@ import { useState } from 'react';
 import { useHeaderHeight } from '@react-navigation/elements';
 
 
-export default function SearchScreen({ dict, selectedDicts }) {
+export default function SearchScreen({ dicts, word, setWord, wordInclusion }) {
 	const [search, setSearch] = useState("")
-	const [word, setWord] = useState("")
 	const headerHeight = useHeaderHeight();
-
-	const wordInDict = (word, dictWords) => {
-		return dictWords.includes(word.toLowerCase())
-	}
-
-	const displayWord = () => {
-		if (!word) {
-			setWord("ka");
-		}
-		return word;
-	}
 
 	return (
 		
 		<View style={ styles.searchView }>
       <View style={styles.cardView}>
         <Card containerStyle={ styles.wordCard }>
-          <Card.Title h1 numberOfLines={1} ellipsizeMode='tail' style={ styles.wordCardTitle }>{ displayWord() }</Card.Title >
+          <Card.Title h1 numberOfLines={1} ellipsizeMode='tail' style={ styles.wordCardTitle }>{ word }</Card.Title >
           <Card.Divider />
           <FlatList
             style={styles.flatList}
-            data={Object.entries(dict)}
-            keyExtractor={ (index) => index }
+            keyExtractor={(_, index) => index}
+            data={Object.entries(dicts)}
             renderItem={({ item }) => {
-              const [dictName, {words: dictWords}] = item;
+              let [id, {name, includesWord, selected}] = item;
               return (
-                selectedDicts[dictName] 
-                ? <View style={styles.row}>
-                    <View style={styles.column}>
-                      <Text h5 numberOfLines={1} ellipsizeMode='tail' style={{textAlign: "right"}}> { dictName } </Text>
-                    </View>
-                    <View style={styles.column}>
-                      <Text h4 style={{color: wordInDict(word, dictWords) ? "#18a558" : "#e43d40", marginLeft: '10%'}}>
-                        { wordInDict(word, dictWords) ? "Yes" : "No" }  
-                      </Text>
-                    </View>
-                  </View>
-                : null 
+                <View style={styles.row}>
+                  { selected 
+                  ? <> 
+                      <View style={styles.column}>
+                        <Text h5 numberOfLines={1} ellipsizeMode='tail' style={{textAlign: "right"}}>{ name }</Text>
+                      </View>
+                      <View style={styles.column}>
+                        <Text h4 style={{color: includesWord ? "#18a558" : "#e43d40", marginLeft: '10%'}}>
+                          { includesWord ? "Yes" : "No" }  
+                        </Text>
+                      </View> 
+                    </>
+                  : null }
+                </View>
               )}}/>
         </Card> 
       </View>
@@ -57,8 +47,8 @@ export default function SearchScreen({ dict, selectedDicts }) {
 			>
 				<SearchBar
 					placeholder="Enter word"
-					onChangeText={(text) => { setSearch(text) }}
-					onSubmitEditing={() => { setWord(search) } }
+					onChangeText={(text) => { setSearch(text.replace(/ +/g,'')) }}
+					onSubmitEditing={() => { search ? setWord(search) : null; } }
 					value={search}
 					platform="ios"
 					returnKeyType="search"

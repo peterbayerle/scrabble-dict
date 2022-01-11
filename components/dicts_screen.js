@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { View, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { Text, Card, Icon } from 'react-native-elements';
 
-export default function DictsScreen({ dict, navigation }) {
+export default function DictsScreen({ dicts, navigation }) {
   const [ pressed, setPressed ] = useState(
     Object.fromEntries(
-      Object.entries(dict)
-      .map(([ key ]) => [ key, false ])
+      Object.entries(dicts).map(([id, {name}]) => [ name, false ])
     )
   );
 
@@ -19,20 +18,22 @@ export default function DictsScreen({ dict, navigation }) {
   return (
     <ScrollView>
       {
-        Object.entries(dict).map(([dictName, {description: description}], i) => (
+        Object.entries(dicts).map((d, i) => {
+          const [id, {name, description}] = d;
+          return (
             <Pressable 
               key={i} 
-              onPressIn={() => { handlePress(dictName, true) }}
-              onPressOut={() => {handlePress(dictName, false); navigation.navigate('DictInfoScreen', { dictName, description }) } }
+              onPressIn={() => {handlePress(name, true) }}
+              onPressOut={() => {handlePress(name, false); navigation.navigate('DictInfoScreen', {id}) } }
             >
               <Card 
                 key={i}
-                containerStyle={{...styles.cardContainer, backgroundColor: pressed[dictName] ? "#cccccc" : "white"}} 
+                containerStyle={{...styles.cardContainer, backgroundColor: pressed[name] ? "#cccccc" : "white"}} 
                 inputContainerStyle={styles.cardInputContainer}  
               >
                 <View style={styles.row}>
                   <View style={styles.textColumn}>
-                    <Card.Title h3 numberOfLines={1} ellipsizeMode='tail' style={styles.cardTitle}>{ dictName }</Card.Title>
+                    <Card.Title h3 numberOfLines={1} ellipsizeMode='tail' style={styles.cardTitle}>{ name }</Card.Title>
                     <Text style={styles.cardDescription}>{ description }</Text>
                   </View>
                   <View style={styles.chevronColumn}>
@@ -42,7 +43,8 @@ export default function DictsScreen({ dict, navigation }) {
                 
               </Card>
             </Pressable>
-        ))
+          )}
+        )
       }
     </ScrollView>
   );
