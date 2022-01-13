@@ -3,7 +3,7 @@ import { openDatabase, Connection } from './model';
 
 export default DatabaseContainer = ({ routes }) => {
   const [ dicts, setDicts ] = useState({});
-  const [word, setWord] = useState("")
+  const [word, setWord] = useState("");
   const [ conn, setConn ] = useState({
     fetchDicts: () => {},
     switchDict: () => {},
@@ -24,7 +24,7 @@ export default DatabaseContainer = ({ routes }) => {
       !dicts[rowid].selected,
       () => {
         conn.fetchDicts((_array) => { 
-          updateFromArray( _array);
+          updateFromArray(_array);
         });
       },
     ); 
@@ -59,5 +59,4 @@ export default DatabaseContainer = ({ routes }) => {
       { routes({dicts, word, setWord, switchDict}) }
     </>
   );
-
 };

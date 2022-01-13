@@ -11,15 +11,15 @@ export async function openDatabase() {
     FileSystem.documentDirectory + 'SQLite/banana-dict.db'
   );
   
-  return SQLite.openDatabase('banana-dict.db')
+  return SQLite.openDatabase('banana-dict.db');
 };
 
 export class Connection {
   constructor(db) {
-    this.db = db
+    this.db = db;
   };
 
-  fetchDicts(callback) {
+  fetchDicts = (callback) => {
     this.db.transaction((tx) => {
       tx.executeSql(
         `select rowid, * from dicts;`,
@@ -45,7 +45,7 @@ export class Connection {
       tx.executeSql(
         `select * from words where word = ?`,
         [word],
-        (_, { rows: { _array } }) => { callback(_array); },
+        (_, { rows: { _array } }) => { callback(_array); }
       );
     });
   };

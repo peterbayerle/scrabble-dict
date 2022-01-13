@@ -18,28 +18,10 @@ let screenOptions = ({ route }) => ({
   },
 });
 
-let StackNavigator = ({ props }) => (
-  <Tab.Screen name={`${name} Tab`} options={{headerShown: false, title: name}}>
-      {() => 
-        <Stack.Navigator>
-          { props.screens.map((f, idx) => 
-            <Stack.Screen key={idx} name={name}> 
-              { children } 
-            </Stack.Screen>) }
-        </Stack.Navigator>}
-    </Tab.Screen> 
-);
-
 export default Routes = (p) => (
     <NavigationContainer>
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName = route.name === "Word Search Tab" ? "search" : "book"
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-      })}
+      screenOptions={screenOptions}
     >
       <Tab.Screen name="Word Search Tab" options={{headerShown: false, title: "Word Search"}}>
         {() => <Stack.Navigator>
