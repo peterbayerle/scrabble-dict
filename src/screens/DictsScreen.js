@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { View, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { Text, Card, Icon } from 'react-native-elements';
+import { Pressable, ScrollView } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { DictCard } from "../components/DictCard";
 
 export default function DictsScreen({ dicts, navigation }) {
   const [ pressed, setPressed ] = useState(
@@ -26,63 +27,13 @@ export default function DictsScreen({ dicts, navigation }) {
               onPressIn={() => {handlePress(name, true) }}
               onPressOut={() => {handlePress(name, false); navigation.navigate('DictInfoScreen', {id}) } }
             >
-              <Card 
-                key={i}
-                containerStyle={{...styles.cardContainer, backgroundColor: pressed[name] ? "#cccccc" : "white"}} 
-                inputContainerStyle={styles.cardInputContainer}  
-              >
-                <View style={styles.row}>
-                  <View style={styles.textColumn}>
-                    <Card.Title h3 numberOfLines={1} ellipsizeMode='tail' style={styles.cardTitle}>{ name }</Card.Title>
-                    <Text style={styles.cardDescription}>{ description }</Text>
-                  </View>
-                  <View style={styles.chevronColumn}>
-                    <Icon name='chevron-right' />
-                  </View>
-                </View>
-                
-              </Card>
+              <DictCard name={name} description={description} backgroundColor={pressed[name] ? "#cccccc" : "white"}>
+                <Icon name='chevron-right' />
+              </DictCard>
             </Pressable>
           )}
         )
       }
     </ScrollView>
   );
-}
-
-const styles = StyleSheet.create({
-  cardContainer: {
-    borderRadius: 10, 
-    borderWidth: 0, 
-    shadowColor: 'rgba(0,0,0, 0.0)',
-  },
-
-  cardInputContainer: {
-    borderBottomWidth: 0,
-  },
-  
-  row: {
-    flexDirection: "row"
-  },
-
-  textColumn: {
-    flexDirection: "column", flex: 1
-  },
-
-  cardTitle: {
-    textAlign: "left",
-    marginRight: "5%"
-  },
-
-  cardDescription: {
-    textAlign: "left", 
-    marginRight: "20%"
-  },
-
-  chevronColumn: {
-    flexDirection: "column", 
-    justifyContent: 'center', 
-    alignItems: 'center'
-  }
-
-});
+};
