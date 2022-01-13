@@ -1,56 +1,56 @@
 import { useState, useEffect } from 'react';
-import * as dbHelpers from './databaseHelpers';
+import { openDatabase, Connection } from './model';
 
 export default DatabaseContainer = ({ routes }) => {
-  const [ dicts, setDicts ] = useState([]);
+  const [ dicts, setDicts ] = useState({});
   const [word, setWord] = useState("")
-  const [ db, setDb ] = useState({
-    transaction: () => {
-      return {
-        executeSql: () => {},
-      };
-  }});
+  const [ conn, setConn ] = useState({
+    fetchDicts: () => {},
+    switchDict: () => {},
+    fetchWordInclusion: () => {},
+  });
 
-  const updateDictsFromArray = (a) => { setDicts(dbHelpers.updateDictsFromArray(dicts, a)); };
-  const updateDictsFromObject = (o, name) => { setDicts(dbHelpers.updateDictsFromObject(dicts, o, name));  };
+  updateFromArray = (a) => {
+    // helper function to parse database results and update dicts state
+    // a = [{rowid, ...}, ...]
+    setDicts({...dicts, ...Object.fromEntries(a.map(({rowid, ...rest}) => 
+      [rowid, {...dicts[rowid], ...rest}]
+    ))});
+  };
   
   const switchDict = (rowid) => { 
-    dbHelpers.switchDict(
-      db, 
+    conn.switchDict(
       rowid, 
       !dicts[rowid].selected,
       () => {
-        dbHelpers.fetchDicts(db, (_array) => { 
-          updateDictsFromArray(_array)
+        conn.fetchDicts((_array) => { 
+          updateFromArray( _array);
         });
-      }
+      },
     ); 
   };
 
   useEffect(() => {
     // on component mount, open database
-    dbHelpers.openDatabase().then((value) => {
-      setDb(value);
+    openDatabase().then((db) => {
+      setConn(new Connection(db));
     });
   }, []);
   
   useEffect(() => {
     // on database loaded, fetch dicts from database 
-    dbHelpers.fetchDicts(db, (_array) => { 
-      updateDictsFromArray(_array)
+    conn.fetchDicts((_array) => { 
+      updateFromArray(_array);
       setWord("ka"); 
     });
-  }, [db]);
+  }, [conn]);
 
   useEffect(() => {
-    dbHelpers.fetchWordInclusion(db, word, (_array) => {
-      if (_array.length) {
-        let {word, ...rest} = _array[0];
-        updateDictsFromObject(rest, "includesWord")
-      } else {
-        let rest = Object.entries(dicts).map(([rowid]) => { return {rowid, includesWord: false}});
-        updateDictsFromArray(rest)
-      }
+    conn.fetchWordInclusion(word, (_array) => {
+      let [{word, ...rest}] = _array.length > 0 ? _array : [{word: null}]
+      updateFromArray(Object.entries(dicts).map(([rowid]) => {
+        return {rowid, ...dicts[rowid], includesWord: word !== null ? rest[rowid] : false}
+      }));
     })
   }, [word]);
 

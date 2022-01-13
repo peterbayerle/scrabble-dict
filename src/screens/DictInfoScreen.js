@@ -2,7 +2,6 @@ import { View, StyleSheet } from 'react-native';
 import { Text, Card, Switch } from 'react-native-elements';
 
 export default function DictInfoScreen({ route, dicts, switchDict }) {
-  console.log(dicts, switchDict)
   const { id } = route.params;
   const { name, selected, description } = dicts[id];
   return (
