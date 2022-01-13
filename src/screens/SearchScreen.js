@@ -18,23 +18,19 @@ export default function SearchScreen({ dicts, word, setWord }) {
           <FlatList
             style={styles.flatList}
             keyExtractor={(_, index) => index}
-            data={Object.entries(dicts)}
+            data={Object.entries(dicts).filter(([_, {selected}]) => selected)}
             renderItem={({ item }) => {
-              let [id, {name, includesWord, selected}] = item;
+              let [_, {name, includesWord }] = item;
               return (
                 <View style={styles.row}>
-                  { selected 
-                  ? <> 
-                      <View style={styles.column}>
-                        <Text h5 numberOfLines={1} ellipsizeMode='tail' style={{textAlign: "right"}}>{ name }</Text>
-                      </View>
-                      <View style={styles.column}>
-                        <Text h4 style={{color: includesWord ? "#18a558" : "#e43d40", marginLeft: '10%'}}>
-                          { includesWord ? "Yes" : "No" }  
-                        </Text>
-                      </View> 
-                    </>
-                  : null }
+                  <View style={styles.column}>
+                    <Text h5 numberOfLines={1} ellipsizeMode='tail' style={{textAlign: "right"}}>{ name }</Text>
+                  </View>
+                  <View style={styles.column}>
+                    <Text h4 style={{color: includesWord ? "#18a558" : "#e43d40", marginLeft: '10%'}}>
+                      { includesWord ? "Yes" : "No" }  
+                    </Text>
+                  </View> 
                 </View>
               )}}/>
         </Card> 
