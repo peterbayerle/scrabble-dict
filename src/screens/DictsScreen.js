@@ -27,7 +27,7 @@ export default function DictsScreen({ dicts, navigation }) {
               onPressIn={() => {handlePress(name, true) }}
               onPressOut={() => {handlePress(name, false); navigation.navigate('DictInfoScreen', {id}) } }
             >
-              <DictCard name={name} description={description} backgroundColor={pressed[name] ? "#cccccc" : "white"}>
+              <DictCard name={name} description={description} truncateTitle={true} backgroundColor={pressed[name] ? "#cccccc" : "white"}>
                 <Icon name='chevron-right' />
               </DictCard>
             </Pressable>

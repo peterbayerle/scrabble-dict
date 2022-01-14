@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 
 let screenOptions = ({ route }) => ({
   tabBarIcon: ({ color, size }) => {
-    let iconName = route.name === "Word Search Tab" ? "search" : "book"
+    let iconName = route.name === 'Word Search Tab' ? 'search' : 'book'
 
     return <Ionicons name={iconName} size={size} color={color} />;
   },
@@ -23,7 +23,7 @@ export default Routes = (p) => (
     <Tab.Navigator
       screenOptions={screenOptions}
     >
-      <Tab.Screen name="Word Search Tab" options={{headerShown: false, title: "Word Search"}}>
+      <Tab.Screen name="Word Search Tab" options={{ headerShown: false, title: 'Word Search'}}>
         {() => <Stack.Navigator>
             <Stack.Screen name="Word Search">
               {(props) => <SearchScreen {...props} {...p} />} 
@@ -31,7 +31,7 @@ export default Routes = (p) => (
           </Stack.Navigator>}
       </Tab.Screen>
 
-      <Tab.Screen name="Dictionaries Tab" options={{headerShown: false, title: "Dictionaries" }}>
+      <Tab.Screen name="Dictionaries Tab" options={{ headerShown: false, title: 'Dictionaries' }}>
         {() => <Stack.Navigator>
           <Stack.Screen name="Dictionaries">
             {(props) => <DictsScreen {...props} {...p} />} 

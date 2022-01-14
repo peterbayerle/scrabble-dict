@@ -19,8 +19,7 @@ export default function SearchScreen({ dicts, word, setWord }) {
             style={styles.flatList}
             keyExtractor={(_, index) => index}
             data={Object.entries(dicts).filter(([_, {selected}]) => selected)}
-            renderItem={({ item }) => {
-              let [_, {name, includesWord }] = item;
+            renderItem={({item: [_, {name, includesWord}]}) => {
               return (
                 <View style={styles.row}>
                   <View style={styles.column}>
