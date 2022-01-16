@@ -18,7 +18,7 @@ let screenOptions = ({ route }) => ({
   },
 });
 
-export default Routes = (p) => (
+export default Routes = (props) => (
     <NavigationContainer>
     <Tab.Navigator
       screenOptions={screenOptions}
@@ -26,7 +26,7 @@ export default Routes = (p) => (
       <Tab.Screen name="Word Search Tab" options={{ headerShown: false, title: 'Word Search'}}>
         {() => <Stack.Navigator>
             <Stack.Screen name="Word Search">
-              {(props) => <SearchScreen {...props} {...p} />} 
+              {(p) => <SearchScreen {...props} {...p} />} 
             </Stack.Screen>
           </Stack.Navigator>}
       </Tab.Screen>
@@ -34,10 +34,10 @@ export default Routes = (p) => (
       <Tab.Screen name="Dictionaries Tab" options={{ headerShown: false, title: 'Dictionaries' }}>
         {() => <Stack.Navigator>
           <Stack.Screen name="Dictionaries">
-            {(props) => <DictsScreen {...props} {...p} />} 
+            {(p) => <DictsScreen {...props} {...p} />} 
           </Stack.Screen>
           <Stack.Screen name="DictInfoScreen" options={{ title: '' }}>
-            {(props) => <DictInfoScreen {...props} {...p} />}
+            {(p) => <DictInfoScreen {...props} {...p} />}
           </Stack.Screen>
         </Stack.Navigator>}
       </Tab.Screen>
