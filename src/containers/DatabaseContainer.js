@@ -12,16 +12,16 @@ export default DatabaseContainer = ({ routes }) => {
 
   updateFromArray = (a) => {
     // helper function to parse database results and update dicts state
-    // a = [{rowid, ...}, ...]
-    setDicts({...dicts, ...Object.fromEntries(a.map(({rowid, ...rest}) => 
-      [rowid, {...dicts[rowid], ...rest}]
-    ))});
+    // a = [{dictid, ...}, ...]
+    setDicts(Object.fromEntries(a.map(({dictid, ...rest}) => 
+      [dictid, {...dicts[dictid], ...rest}]
+    )));
   };
   
-  const switchDict = (rowid) => { 
+  const switchDict = (dictid) => { 
     conn.switchDict(
-      rowid, 
-      !dicts[rowid].selected,
+      dictid, 
+      !dicts[dictid].selected, 
       () => {
         conn.fetchDicts((_array) => { 
           updateFromArray(_array);
@@ -47,10 +47,7 @@ export default DatabaseContainer = ({ routes }) => {
 
   useEffect(() => {
     conn.fetchWordInclusion(word, (_array) => {
-      let [{word, ...rest}] = _array.length > 0 ? _array : [{word: null}]
-      updateFromArray(Object.entries(dicts).map(([rowid]) => {
-        return {rowid, ...dicts[rowid], includesWord: word !== null ? rest[rowid] : false}
-      }));
+      updateFromArray(_array);
     })
   }, [word]);
 

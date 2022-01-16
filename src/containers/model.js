@@ -19,44 +19,37 @@ export class Connection {
     this.db = db;
   };
 
-  fetchWordCounts(a, callback) {
-    let innerQuery = a.map(({ rowid }) => 
-      `select \'${rowid}\' as rowid, count(*) as numWords from words where "${rowid}" = 1`
-    ).join(' union ');
-
-    let fullQuery = `select rowid, dicts.*, numwordsInDicts.numWords
-      from dicts
-      join ( ${innerQuery} ) numWordsInDicts
-      on dicts.rowid = numWordsInDicts.rowid`;
-
-    // second, execute the query
-    this.db.transaction((tx) => {
-      tx.executeSql(
-        fullQuery,
-        [],
-        (_, { rows: { _array: _arrayInner } }) => { callback(_arrayInner); },
-        (_, e) => console.log(e)
-      );
-    });
-  }
-
   fetchDicts = (callback) => {
+    // fetch list of dictionaries and their attributes (decription, selected, wordCount)
     this.db.transaction((tx) => {
       tx.executeSql(
-        `select rowid, * from dicts;`,
+        `with word_counts as (
+          select dictid, count(*) as wordCount
+          from words
+          group by dictid
+        )
+      
+        select
+          dicts.*,
+          word_counts.wordCount
+        from dicts 
+        join word_counts 
+          on dicts.dictid = word_counts.dictid;`,
         [],
-        (_, { rows: { _array: _arrayOuter } }) => { return this.fetchWordCounts(_arrayOuter, callback) },
+        (_, { rows: { _array } }) => { callback(_array) },
       );
     });
   }
 
-  switchDict = (rowid, setTo, callback) => {
+  switchDict = (dictid, setto, callback) => {
     // update database to mark dictionary as switched on or off
     this.db.transaction((tx) => {
       tx.executeSql(
-        `update dicts set selected = ? where rowid = ?;`,
-        [setTo, rowid],
-        (_, { rows: { _array } }) => { callback(_array); }
+        `update dicts 
+        set selected = ?
+        where dictid = ?;`,
+        [setto, dictid],
+        callback
       );
     });
   };
@@ -64,7 +57,16 @@ export class Connection {
   fetchWordInclusion = (word, callback) => { 
     this.db.transaction((tx) => {
       tx.executeSql(
-        `select * from words where word = ?`,
+        `select 
+        dictid,
+        (
+          select count(*) 
+          from words 
+          where 
+              word = ?
+              and words.dictid=dicts.dictid
+        ) as includesWord
+        from dicts;`,
         [word],
         (_, { rows: { _array } }) => { callback(_array); }
       );
