@@ -56,17 +56,34 @@ export class Connection {
   
   fetchWordInclusion = (word, callback) => { 
     this.db.transaction((tx) => {
-      tx.executeSql(
-        `select 
-        dictid,
+      tx.executeSql(`
+        select dictid,
         (
-          select count(*) 
-          from words 
-          where 
-              word = ?
-              and words.dictid=dicts.dictid
+        select count(*)
+        from words
+        where
+            word = ?
+            and words.dictid = dicts.dictid
         ) as includesWord
-        from dicts;`,
+        from dicts`,
+        [word],
+        (_, { rows: { _array } }) => { callback(_array); }
+      );
+    });
+  };
+
+  fetchDefinitions = (word, callback) => { 
+    this.db.transaction((tx) => {
+      tx.executeSql(`
+        select dictid,
+        (
+        select min(definition)
+        from words
+        where
+            word = ?
+            and words.dictid = dicts.dictid
+        ) as definition
+        from dicts`,
         [word],
         (_, { rows: { _array } }) => { callback(_array); }
       );

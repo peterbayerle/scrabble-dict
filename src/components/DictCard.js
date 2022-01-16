@@ -3,21 +3,23 @@ import { Text, Card } from 'react-native-elements';
 
 export const DictCard = ({ name, description, subtitle, truncateTitle = false, backgroundColor = 'white', children }) => {
   let d = truncateTitle ? { numberOfLines: 1, ellipsizeMode: 'tail'} : {}
-  return (<Card 
-    containerStyle={{...styles.cardContainer, backgroundColor}}
-    inputContainerStyle={styles.cardInputContainer} 
-  >
-    <View style={styles.row}>
-    <View style={styles.column}>
-      <Card.Title h3 {...d} style={styles.cardTitle}>{ name }</Card.Title>
-      { subtitle ? <Text h4 style={styles.subtitle}>{ subtitle }</Text> : null }
-      <Text style={styles.cardDescription}>{ description }</Text>  
-    </View>
-    <View style={styles.childColumn}>
-      { children }
-    </View>
-    </View>
-  </Card>);
+  return (
+    <Card 
+      containerStyle={{...styles.cardContainer, backgroundColor}}
+      inputContainerStyle={styles.cardInputContainer} 
+    >
+      <View style={styles.row}>
+        <View style={styles.column}>
+          <Text h4 {...d} style={styles.cardTitle}>{ name }</Text>
+          { subtitle ? <Text style={styles.subtitle}>{ subtitle }</Text> : null }
+          <Text style={styles.cardDescription}>{ description }</Text>  
+        </View>
+        <View style={styles.childColumn}>
+          { children }
+        </View>
+      </View>
+    </Card>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -33,12 +35,15 @@ const styles = StyleSheet.create({
 
   cardTitle: {
     textAlign: 'left',
-    marginRight: '5%'
+    marginRight: '5%',
+    fontWeight: 'bold',
+    marginBottom: '2%'
   },
 
   subtitle: {
-    marginTop: '-5%', 
-    marginBottom: '5%'
+    marginTop: '-3%', 
+    marginBottom: '5%',
+    fontSize: 20
   },
 
   cardDescription: {

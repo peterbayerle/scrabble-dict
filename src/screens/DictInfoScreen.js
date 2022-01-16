@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { Switch } from "react-native-elements";
 import { DictCard } from "../components/DictCard";
 
-export default function DictInfoScreen({ route, dicts, switchDict }) {
+export const DictInfoScreen = ({ route, dicts, switchDict }) => {
   const { id } = route.params;
   const { name, selected, description } = dicts[id];
   const n = dicts[id].wordCount;

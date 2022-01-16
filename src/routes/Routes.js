@@ -3,9 +3,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 
-import DictsScreen from '../screens/DictsScreen';
-import DictInfoScreen from '../screens/DictInfoScreen';
-import SearchScreen from '../screens/SearchScreen';
+import { DictsScreen } from '../screens/DictsScreen';
+import { DictInfoScreen } from '../screens/DictInfoScreen';
+import { SearchScreen } from '../screens/SearchScreen';
+import { WordInfoScreen } from '../screens/WordInfoScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -19,16 +20,25 @@ let screenOptions = ({ route }) => ({
 });
 
 export default Routes = (props) => (
-    <NavigationContainer>
+  <NavigationContainer>
     <Tab.Navigator
       screenOptions={screenOptions}
     >
       <Tab.Screen name="Word Search Tab" options={{ headerShown: false, title: 'Word Search'}}>
         {() => <Stack.Navigator>
+          <Stack.Screen name="Word Search">
+            {(p) => <SearchScreen {...props} {...p} />} 
+          </Stack.Screen>
+          <Stack.Screen name="WordInfoScreen" options={({ route }) => ({ title: route.params.word })}>
+            {(p) => <WordInfoScreen {...props} {...p} />}
+          </Stack.Screen>
+        </Stack.Navigator>}
+        
+        {/* {() => <Stack.Navigator>
             <Stack.Screen name="Word Search">
               {(p) => <SearchScreen {...props} {...p} />} 
             </Stack.Screen>
-          </Stack.Navigator>}
+          </Stack.Navigator>} */}
       </Tab.Screen>
 
       <Tab.Screen name="Dictionaries Tab" options={{ headerShown: false, title: 'Dictionaries' }}>

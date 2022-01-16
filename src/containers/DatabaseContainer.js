@@ -18,38 +18,38 @@ export default DatabaseContainer = ({ routes }) => {
     )));
   };
   
-  const switchDict = (dictid) => { 
-    conn.switchDict(
-      dictid, 
-      !dicts[dictid].selected, 
-      () => {
-        conn.fetchDicts((_array) => { 
-          updateFromArray(_array);
-        });
-      },
-    ); 
-  };
+  const switchDict = (dictid) => conn.switchDict(
+    dictid, 
+    !dicts[dictid].selected, 
+    () => {
+      conn.fetchDicts((_array) => { 
+        updateFromArray(_array);
+      });
+    },
+  ); 
 
-  useEffect(() => {
+  useEffect(() =>
     // on component mount, open database
     openDatabase().then((db) => {
       setConn(new Connection(db));
-    });
-  }, []);
+    }), []);
   
-  useEffect(() => {
+  useEffect(() => 
     // on database loaded, fetch dicts from database 
     conn.fetchDicts((_array) => { 
       updateFromArray(_array);
       setWord('ka'); 
-    });
-  }, [conn]);
+    }), [conn]);
 
-  useEffect(() => {
-    conn.fetchWordInclusion(word, (_array) => {
-      updateFromArray(_array);
-    })
-  }, [word]);
+  useEffect(() =>
+    conn.fetchWordInclusion(
+      word, 
+      (_array) => {
+        updateFromArray(_array);
+        conn.fetchDefinitions(word, updateFromArray);
+      }
+    ), [word]
+  );
 
   return (
     <>
