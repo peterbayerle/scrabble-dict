@@ -1,4 +1,4 @@
-import { View, StyleSheet, KeyboardAvoidingView, FlatList } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { SearchBar, Text, Card, Button } from 'react-native-elements';
 import { useState } from 'react';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -11,7 +11,7 @@ export const SearchScreen = ({ dicts, word, setWord, navigation }) => {
     return Object.entries(dicts).map(([_, {includesWord}]) => includesWord).some(x => x)
   }
 
-  let titleAndDefineButton = () => (
+  let TitleAndDefineButton = () => (
     <View style={styles.titleRow}>
     <Text h1 numberOfLines={1} ellipsizeMode='tail' style={styles.wordCardTitle}>
       { word }
@@ -29,32 +29,28 @@ export const SearchScreen = ({ dicts, word, setWord, navigation }) => {
       : null
     }
     </View>
-
-    
   );
 
-  let dictsList = () => (
-    <FlatList
-      style={styles.flatList}
-      keyExtractor={(_, index) => index}
-      data={Object.entries(dicts).filter(([_, {selected}]) => selected)}
-      renderItem={({item: [_, {name, includesWord}]}) => {
-        return (
-          <View style={styles.row}>
-            <View style={styles.column}>
-              <Text h5 numberOfLines={1} ellipsizeMode="tail" style={{textAlign: 'right'}}>{ name }</Text>
+  let DictsList = () => (
+    <ScrollView contentContainerStyle={styles.dictsListScrollView}>
+      <View>
+        { Object.entries(dicts).filter(([_, {selected}]) => selected).map(([dictid, {name, includesWord}]) => 
+          <View key={dictid} style={styles.row}>
+            <View style={{...styles.column, ...styles.left}}>
+              <Text h5 numberOfLines={1} ellipsizeMode="tail" style={styles.dictName}>{ name }</Text>
             </View>
-            <View style={styles.column}>
-              <Text h4 style={{color: includesWord ? '#18a558' : '#e43d40', marginLeft: '10%'}}>
+            <View style={{...styles.column, ...styles.right}}>
+              <Text h4 style={{color: includesWord ? '#18a558' : '#e43d40'}}>
                 { includesWord ? 'Yes' : 'No' }  
               </Text>
-            </View> 
+            </View>
           </View>
-        )}}
-    />
+        )}
+      </View>
+    </ScrollView>
   );
 
-  let searchBar = () => (
+  let WordSearchBar = () => (
     <KeyboardAvoidingView 
       keyboardVerticalOffset={headerHeight}
       behavior="padding"
@@ -74,15 +70,15 @@ export const SearchScreen = ({ dicts, word, setWord, navigation }) => {
   );
 
 	return (
-		<View style={ styles.searchView }>
+		<View style={styles.searchView}>
       <View style={styles.cardView}>
-        <Card containerStyle={ styles.wordCard }>
-          { titleAndDefineButton() }
+        <Card containerStyle={styles.wordCard}>
+          <TitleAndDefineButton />
           <Card.Divider />
-          { dictsList() }
+          <DictsList />
         </Card> 
       </View>
-			{ searchBar() }
+			{ WordSearchBar() }
 		</View>
 	);
 };
@@ -94,32 +90,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
 
-  row: {
-    flexDirection: 'row',
-  },
-
-  titleRow: { 
-    flexDirection: 'row',
-    marginBottom:'3%'
-  },
-
- column: {
-    flexDirection: 'column', 
-    flex: 1,
-    justifyContent: 'center', 
-  },
-
-  defineColumn: {
-    flexDirection:'row', 
-    alignItems: 'center', 
-    justifyContent: 'center'
-  },
-
-  flatList: {
-    maxHeight: '75%'
-  },
-
-	wordCard: {
+  wordCard: {
 		borderRadius: 10, 
 		borderWidth: 0, 
 		width: '92.5%',
@@ -131,7 +102,13 @@ const styles = StyleSheet.create({
     maxHeight:'50%'
   },
 
-	wordCardTitle: {
+  // word + define button
+  titleRow: { 
+    flexDirection: 'row',
+    marginBottom:'3%'
+  },
+
+  wordCardTitle: {
     marginLeft: '2%',
     fontWeight: 'bold', 
     flex: 1, 
@@ -139,6 +116,41 @@ const styles = StyleSheet.create({
     textAlign: 'left'
 	},
 
+  defineColumn: {
+    flexDirection:'row', 
+    alignItems: 'center', 
+    justifyContent: 'center'
+  },
+
+  // dicts list
+  dictsListScrollView: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+
+  column: {
+    flexDirection: 'column', 
+  },
+
+  right: {
+    minWidth: '10%',
+  },
+
+  left: {
+    marginRight: '5%',
+  },
+  
+  dictName: {
+    textAlign: 'right'
+  },
+
+  // search bar
 	searchBarView: {
 		alignItems: 'center',
 	},
@@ -146,5 +158,6 @@ const styles = StyleSheet.create({
 	searchBar: {
 		backgroundColor: 'rgba(0,0,0,0)',
 		width: '97%',
-	}
+	},
+
 });
