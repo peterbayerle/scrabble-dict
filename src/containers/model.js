@@ -31,9 +31,12 @@ export class Connection {
       
         select
           dicts.*,
-          word_counts.wordCount
+          case 
+            when word_counts.wordCount is null then 0
+            else word_counts.wordCount
+          end as wordCount
         from dicts 
-        join word_counts 
+        left join word_counts 
           on dicts.dictid = word_counts.dictid;`,
         [],
         (_, { rows: { _array } }) => { callback(_array) },
@@ -75,15 +78,9 @@ export class Connection {
   fetchDefinitions = (word, callback) => { 
     this.db.transaction((tx) => {
       tx.executeSql(`
-        select dictid,
-        (
-        select min(definition)
+        select *
         from words
-        where
-            word = ?
-            and words.dictid = dicts.dictid
-        ) as definition
-        from dicts`,
+        where word = ?`,
         [word],
         (_, { rows: { _array } }) => { callback(_array); }
       );

@@ -22,8 +22,8 @@ export const SearchScreen = ({ dicts, word, setWord, navigation }) => {
             title="Define" icon={{name: 'chevron-right', color: '#007AFF'}}
             onPress={() => navigation.navigate('WordInfoScreen', {word, dicts})}
             iconRight 
-            buttonStyle={{backgroundColor: 'rgba(0, 0, 0, 0)', borderRadius: 3 }} 
-            titleStyle={{ color: '#007AFF', fontSize: 16 }}>
+            buttonStyle={styles.defineButton} 
+            titleStyle={styles.defineButtonText}>
           </Button>
         </View>
       : null
@@ -122,6 +122,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 
+  defineButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0)', 
+    borderRadius: 3 
+  },
+
+  defineButtonText: { 
+    color: '#007AFF', 
+    fontSize: 17
+  },
+
   // dicts list
   dictsListScrollView: {
     display: 'flex',
@@ -147,7 +157,8 @@ const styles = StyleSheet.create({
   },
   
   dictName: {
-    textAlign: 'right'
+    textAlign: 'right',
+    fontSize: 17,
   },
 
   // search bar

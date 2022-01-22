@@ -11,8 +11,10 @@ export const DictCard = ({ name, description, subtitle, truncateTitle = false, b
       <View style={styles.row}>
         <View style={styles.column}>
           <Text h4 {...d} style={styles.cardTitle}>{ name }</Text>
-          { subtitle ? <Text style={styles.subtitle}>{ subtitle }</Text> : null }
-          <Text style={styles.cardDescription}>{ description }</Text>  
+            { subtitle ? <Text style={styles.subtitle}>{ subtitle }</Text> : null }
+          <Text style={{...styles.cardDescription, marginRight: children ? '10%' : '0%'}}>
+            { description }
+          </Text>  
         </View>
         <View style={styles.childColumn}>
           { children }
@@ -41,14 +43,16 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
-    marginTop: '-3%', 
+    marginTop: '-2%', 
     marginBottom: '5%',
-    fontSize: 20
+    fontSize: 20,
+    fontStyle: 'italic',
+    fontWeight: '300'
   },
 
   cardDescription: {
     textAlign: 'left', 
-    marginRight: '20%'
+    fontSize: 17
   },
 
   row: {
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
 
   column: {
     flexDirection: 'column', 
-    flex: 1
+    flex: 1,
   },
 
   childColumn: {

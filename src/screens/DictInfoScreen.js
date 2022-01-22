@@ -9,7 +9,7 @@ export const DictInfoScreen = ({ route, dicts, switchDict }) => {
   
   return (
     <View>
-      <DictCard name={name} description={description} subtitle={`${(n ? n : 0).toLocaleString()} words`} backgroundColor="rbga(0, 0, 0, 0.0)">
+      <DictCard name={name} description={description} subtitle={`${(n || 0).toLocaleString()} words`} backgroundColor="rbga(0, 0, 0, 0.0)">
         <Switch
           value={selected == 1}
           onChange={() => switchDict(id)}
