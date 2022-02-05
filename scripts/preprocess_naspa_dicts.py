@@ -1,19 +1,21 @@
 import pandas as pd
 import json
+from dataclasses import dataclass
 
-def intake_df(file_path):
-    with open(file_path, 'r') as f:
-        data = f.read()
+@dataclass
+class Reader(object):
+    file_path: str
 
-    defs = json.loads(data)
+    def intake_df(self):
+        with open('nswl2020-defs.json', 'r') as f:
+            data = f.read()
 
-    words = defs["words"]
-    words.append(["TRIBESPERSON","TRIBESPERSON","noun_singular",1,""])
-    
-    return pd.DataFrame(
-        defs["words"],
-        columns=["word", "root", "pos", "num", "definition"]
-    )
+        defs = json.loads(data)
+        
+        return pd.DataFrame(
+            defs["words"],
+            columns=["word", "root", "pos", "num", "definition"]
+        )
 
 class Preprocessor(object):
     def handle_roots(self, df):
@@ -100,6 +102,13 @@ class Preprocessor(object):
 
         return row
 
+    def remove_invalid_words(self, df):
+      # remove words whose definitions have a trailing # or *
+      df['is_valid'] = df['definition_friendly'].apply(lambda s: not s or (s[-1] not in ('#', '*')))
+      df = df[df['is_valid']]
+      df = df.drop('is_valid', axis=1)
+
+      return df
 
     def transform(self, df):
         # Step 1: handle rows which are roots 
@@ -121,7 +130,7 @@ class Preprocessor(object):
         final['word'] = final['word'].apply(lambda s: s.lower())
         final['word_friendly'] = final['word_friendly'].apply(lambda s: s.lower())
 
-        assert final.shape[0] == df.shape[0]
+        final = self.remove_invalid_words(final)
 
         return final
 
@@ -130,14 +139,14 @@ def get_words(final, word_list):
     
 if __name__ == '__main__':
     naspa_json_path = ...
-    naspa_dict_id = ...
     naspa_csv_out_path = ...
+    ID = ...
 
-    df = intake_df(naspa_json_path)
+    df = Reader(naspa_json_path).intake_df()
 
     final = Preprocessor().transform(df)
-    final['dictid'] = naspa_dict_id
-    final.to_csv(naspa_csv_out_path, index=False)
+    final['dictid'] = ID
+    final.to_csv(naspa_csv_out_path, index=False, header=False)
 
     # check some edge cases
     print(
@@ -146,7 +155,7 @@ if __name__ == '__main__':
         get_words(final, ["know", "knowing", "known"]),
         get_words(final, ["agora", "agorae", "agoras", "agorot", "agoroth"]),
         get_words(final, ["beat", "beaten"]),
-        end='\n\n'
+        sep='\n\n'
     )
 
 

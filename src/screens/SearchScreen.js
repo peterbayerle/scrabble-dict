@@ -1,4 +1,4 @@
-import { View, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, ScrollView, ActivityIndicator } from 'react-native';
 import { SearchBar, Text, Card, Button } from 'react-native-elements';
 import { useState } from 'react';
 import { useHeaderHeight } from '@react-navigation/elements';

@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, Text } from 'react-native';
+import { Pressable, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { DictCard } from "../components/DictCard";
 
 export const DictsScreen = ({ dicts, navigation }) => {
   const [ pressed, setPressed ] = useState(
     Object.fromEntries(
-      Object.entries(dicts).map(([id, {name}]) => [ name, false ])
+      Object.entries(dicts).map(([_, {name}]) => [ name, false ])
     )
   );
 

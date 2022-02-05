@@ -4,9 +4,10 @@ import { openDatabase, Connection } from './model';
 let groupBy = (x,f)=>x.reduce((a,b)=>((a[f(b)]||=[]).push(b),a), []);
 
 export default DatabaseContainer = ({ routes }) => {
-  const [ dicts, setDicts ] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [dicts, setDicts] = useState({});
   const [word, setWord] = useState('');
-  const [ conn, setConn ] = useState({
+  const [conn, setConn] = useState({
     fetchDicts: () => {},
     switchDict: () => {},
     fetchWordInclusion: () => {},
@@ -43,6 +44,7 @@ export default DatabaseContainer = ({ routes }) => {
     conn.fetchDicts((_array) => { 
       updateFromArray(_array);
       setWord('ka'); 
+      setLoading(false);
     }), [conn]);
 
   useEffect(() =>
@@ -63,7 +65,7 @@ export default DatabaseContainer = ({ routes }) => {
 
   return (
     <>
-      { routes({dicts, word, setWord, switchDict}) }
+      { routes({loading, dicts, word, setWord, switchDict}) }
     </>
   );
 };

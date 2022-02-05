@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { View, ActivityIndicator } from 'react-native';
 
 import { DictsScreen } from '../screens/DictsScreen';
 import { DictInfoScreen } from '../screens/DictInfoScreen';
@@ -19,6 +20,12 @@ let screenOptions = ({ route }) => ({
   },
 });
 
+let LoadingScreen = _ => (
+  <View style={{marginTop: "10%"}}>
+    <ActivityIndicator size="large"/>
+  </View>
+)
+
 export default Routes = (props) => (
   <NavigationContainer>
     <Tab.Navigator
@@ -27,24 +34,18 @@ export default Routes = (props) => (
       <Tab.Screen name="Word Search Tab" options={{ headerShown: false, title: 'Word Search'}}>
         {() => <Stack.Navigator>
           <Stack.Screen name="Word Search">
-            {(p) => <SearchScreen {...props} {...p} />} 
+            {(p) => props.loading ? <LoadingScreen/> :<SearchScreen {...props} {...p} />} 
           </Stack.Screen>
           <Stack.Screen name="WordInfoScreen" options={({ route }) => ({ title: route.params.word })}>
             {(p) => <WordInfoScreen {...props} {...p} />}
           </Stack.Screen>
         </Stack.Navigator>}
-        
-        {/* {() => <Stack.Navigator>
-            <Stack.Screen name="Word Search">
-              {(p) => <SearchScreen {...props} {...p} />} 
-            </Stack.Screen>
-          </Stack.Navigator>} */}
       </Tab.Screen>
 
       <Tab.Screen name="Dictionaries Tab" options={{ headerShown: false, title: 'Dictionaries' }}>
         {() => <Stack.Navigator>
           <Stack.Screen name="Dictionaries">
-            {(p) => <DictsScreen {...props} {...p} />} 
+            {(p) => props.loading ? <LoadingScreen/> : <DictsScreen {...props} {...p} />} 
           </Stack.Screen>
           <Stack.Screen name="DictInfoScreen" options={{ title: '' }}>
             {(p) => <DictInfoScreen {...props} {...p} />}
