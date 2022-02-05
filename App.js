@@ -9,6 +9,7 @@ export default function App() {
         <>
           <StatusBar
             barStyle="dark-content"
+            hidden={true}
           />
           <Routes {...props} />
         </>

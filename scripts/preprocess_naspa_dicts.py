@@ -7,7 +7,7 @@ class Reader(object):
     file_path: str
 
     def intake_df(self):
-        with open('nswl2020-defs.json', 'r') as f:
+        with open(self.file_path, 'r') as f:
             data = f.read()
 
         defs = json.loads(data)
@@ -18,6 +18,20 @@ class Reader(object):
         )
 
 class Preprocessor(object):
+    def remove_hash_and_star_from_definition(self, df):
+      def remove_hash_and_star(s):
+        if s == 'a word or phrase preceded by the symbol # that categorizes the accompanying text':
+          return s
+        
+        s = s.replace('*', '')
+        s = s.replace('#', '')
+
+        return s
+
+      df['definition'] = df['definition'].apply(remove_hash_and_star)
+
+      return df
+
     def handle_roots(self, df):
         df_roots = df[df['word'] == df['root']]
         df_nonroots = df[df['word'] != df['root']]
@@ -102,15 +116,9 @@ class Preprocessor(object):
 
         return row
 
-    def remove_invalid_words(self, df):
-      # remove words whose definitions have a trailing # or *
-      df['is_valid'] = df['definition_friendly'].apply(lambda s: not s or (s[-1] not in ('#', '*')))
-      df = df[df['is_valid']]
-      df = df.drop('is_valid', axis=1)
-
-      return df
-
     def transform(self, df):
+        df = self.remove_hash_and_star_from_definition(df)
+
         # Step 1: handle rows which are roots 
         df_roots, df_nonroots = self.handle_roots(df)
         assert df_roots.shape[0] + df_nonroots.shape[0] == df.shape[0]
@@ -129,8 +137,6 @@ class Preprocessor(object):
 
         final['word'] = final['word'].apply(lambda s: s.lower())
         final['word_friendly'] = final['word_friendly'].apply(lambda s: s.lower())
-
-        final = self.remove_invalid_words(final)
 
         return final
 
@@ -155,6 +161,10 @@ if __name__ == '__main__':
         get_words(final, ["know", "knowing", "known"]),
         get_words(final, ["agora", "agorae", "agoras", "agorot", "agoroth"]),
         get_words(final, ["beat", "beaten"]),
+        get_words(final, ["velcro"]),
+        get_words(final, ["hashtag"]),
+        get_words(final, ["bahuvrihi"]),
+        get_words(final, ["calamander"]),
         sep='\n\n'
     )
 
